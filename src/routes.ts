@@ -4,8 +4,8 @@ import URLController from './controllers/URLController';
 const routes = express();
 
 routes
-  .post('/', URLController.post)
-  .get('/', URLController.getAllURL)
-  .get('/:id', URLController.getURL);
+  .get('/', URLController.get)
+  .get('/:shortUrl', URLController.get)
+  .post('/', URLController.create);
 
 export default routes;

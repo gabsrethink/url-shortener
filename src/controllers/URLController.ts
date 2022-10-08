@@ -1,53 +1,28 @@
 import { Request, Response } from 'express';
-import crypto from 'crypto';
-import fs from 'fs';
-import { getURLId } from '../services/url.service';
+import { getUrl, createUrl } from '../services/url.service';
 
-const shortString = crypto.randomBytes(3).toString('hex');
-let urls: any = {};
-
-fs.readFile('./src/data/urls.json', 'utf8', (err, data) => {
-  if (err) {
-    console.log(err);
-  } else {
-    urls = JSON.parse(data);
-  }
-});
-
-const urlFile = () => {
-  fs.writeFile('./src/data/urls.json', JSON.stringify(urls), (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('Produto inserido');
-    }
-  });
-};
-
-const post = async (request: Request, response: Response) => {
-  const {
-    url,
-  }: {
-    url: string;
-  } = request.body;
-
+const get = async (request: Request, response: Response) => {
   try {
-    urls[shortString] = url;
-    urlFile();
-    response.json(url);
+    const { shortUrl } = request.params;
+    const results = await getUrl(shortUrl);
+    if (results.length > 0) {
+      response.json(results);
+    } else {
+      response.redirect(results.url);
+    }
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
 
-const getURL = async (request: Request, response: Response) => {
-  const id = request.params.id;
-  getURLId(id);
-  response.json(urls[id]);
+const create = async (request: Request, response: Response) => {
+  try {
+    const { url } = request.body;
+    const shortenUrl = await createUrl(url);
+    response.send(shortenUrl);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const getAllURL = async (_request: Request, response: Response) => {
-  response.json(urls);
-};
-
-export default { post, getURL, getAllURL };
+export default { get, create };
