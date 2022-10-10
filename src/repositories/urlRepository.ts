@@ -16,4 +16,15 @@ export async function getUrl(shortUrl: string) {
   }
 }
 
-export default { getUrl };
+export async function createUrl(shortenUrl: string, url: string) {
+  try {
+    if (shortenUrl) {
+      const results = await knex('urls').insert({ shortenUrl, url });
+      return results;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default { getUrl, createUrl };

@@ -1,4 +1,3 @@
-import knex from '../database/index';
 import crypto from 'crypto';
 import urlRepository from '../repositories/urlRepository';
 
@@ -12,11 +11,11 @@ export async function getUrl(shortUrl: string) {
 
 export async function createUrl(url: string) {
   try {
-    const shortenUrl = crypto.randomBytes(3).toString('hex');
-    await knex('urls').insert({ url, shortenUrl });
-    return shortenUrl;
+    if (url) {
+      const shortenUrl = crypto.randomBytes(3).toString('hex');
+      return await urlRepository.createUrl(shortenUrl, url);
+    }
   } catch (error) {
     console.log(error);
-    return null;
   }
 }
