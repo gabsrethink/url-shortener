@@ -1,13 +1,11 @@
 import express from 'express';
+import handleError from './error/errorHandler';
 import routes from './routes';
 
 const app = express();
 app.use(express.json());
 app.use(routes);
-
-export function getErrorMessage(error: unknown) {
-  if (error instanceof Error) return error.message;
-  return String(error);
-}
+//error
+app.use(handleError);
 
 app.listen(4000, () => console.log('Server running at http://localhost:4000'));
